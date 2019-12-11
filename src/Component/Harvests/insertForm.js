@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
-import {
-  Form,
-  Input,
-  Modal,
-  InputNumber,
-  message,
-  Upload,
-  Button,
-  Icon
-} from "antd";
-import { createProduct, updateProduct } from "../../Store/Action/Product";
+import { Form, Input, Modal, InputNumber, message } from "antd";
+import { createHarvests, updateHarvests } from "../../Store/Action/Harvests";
 
 const initialData = [
-  { name: "ID", value: "" },
-  { name: "SKU", value: "" },
-  { name: "Name", value: "" },
-  { name: "Price", value: "" },
-  { name: "Quantity", value: "" }
+  { name: "HarvestId", value: "" },
+  { name: "ProductId", value: "" },
+  { name: "Quantity", value: "" },
+  { name: "Day", value: "" },
+  { name: "Month", value: "" },
+  { name: "Year", value: "" },
+  { name: "EmployeeId", value: "" }
 ];
 const formItemLayout = {
   labelCol: {
@@ -32,7 +25,6 @@ const formItemLayout = {
 
 const InsertForm = props => {
   const [configData, setConfigData] = useState(initialData);
-  const [imgList, setImgList] = useState([]);
   const [disabledSubmit, setDisabledSubmit] = useState(false);
   const { getFieldDecorator } = props.form;
 
@@ -40,36 +32,35 @@ const InsertForm = props => {
     const data = _.get(props, "data", false);
     const temp = data
       ? [
-          { name: "ID", value: data.id },
-          { name: "SKU", value: data.sku },
-          { name: "Name", value: data.name },
-          { name: "Price", value: data.price },
-          { name: "Quantity", value: data.quantity }
+          { name: "HarvestId", value: data.harvestId },
+          { name: "ProductId", value: data.productId },
+          { name: "Quantity", value: data.quantity },
+          { name: "Day", value: data.day },
+          { name: "Month", value: data.month },
+          { name: "Year", value: data.year },
+          { name: "EmployeeId", value: data.employeeId }
         ]
       : initialData;
     setConfigData(temp);
   }, []);
   const handleOk = async () => {
     const _id = _.get(props, "data._id");
-    if (!_id && !imgList) {
-      message.info("Please upload your image!");
-      return;
-    }
     setDisabledSubmit(true);
     const data = {
-      id: configData[0].value,
-      sku: configData[1].value,
-      name: configData[2].value,
-      price: configData[3].value,
-      quantity: configData[4].value,
-      image: imgList ? imgList[0] : null
+      harvestId: configData[0].value,
+      productId: configData[1].value,
+      quantity: configData[2].value,
+      day: configData[3].value,
+      month: configData[4].value,
+      year: configData[5].value,
+      employeeId: configData[6].value,
     };
     _id && _.set(data, "_id", _id);
     let res = "";
     if (props.action === "Update") {
-      res = await updateProduct(data);
+      res = await updateHarvests(data);
     } else {
-      res = await createProduct(data);
+      res = await createHarvests(data);
     }
     const status = _.get(res, "status");
     if (status === 200) {
@@ -88,27 +79,6 @@ const InsertForm = props => {
     const index = _.findIndex(array, { name: item.name });
     array[index].value = value;
     setConfigData(array);
-  };
-  const handleUploadChange = info => {
-    let fileList = [...info.fileList];
-    fileList = fileList.slice(-1);
-
-    fileList = fileList.map(file => {
-      if (file.response) {
-        file.url = file.response.url;
-      }
-      return file;
-    });
-    setImgList(fileList);
-  };
-  const uploadProps = {
-    beforeUpload: file => {
-      setImgList(file);
-      return false;
-    },
-    fileList: imgList,
-    listType: "picture-card",
-    onChange: handleUploadChange
   };
   return (
     <Form
@@ -130,27 +100,18 @@ const InsertForm = props => {
               initialValue: item.value,
               rules: [{ required: true, message: "Please input to field!" }]
             })(
-              item.name === "Price" || item.name === "Quantity" ? (
+              item.name === "HarvestId" ||
+                item.name === "ProductId" ||
+                item.name === "EmployeeId" ? (
+                <Input onChange={e => handleChangeData(e.target.value, item)} />
+              ) : (
                 <InputNumber
                   onChange={value => handleChangeData(value, item)}
                 />
-              ) : (
-                <Input onChange={e => handleChangeData(e.target.value, item)} />
               )
             )}
           </Form.Item>
         ))}
-        <Form.Item label="Image">
-          {getFieldDecorator("image", {
-            rules: [{ required: true, message: "Please input to field!" }]
-          })(
-            <Upload {...uploadProps}>
-              <Button>
-                <Icon type="upload" /> Upload Image
-              </Button>
-            </Upload>
-          )}
-        </Form.Item>
       </Modal>
     </Form>
   );

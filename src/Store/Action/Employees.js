@@ -7,12 +7,7 @@ export function setEmployees(payload) {
     payload
   };
 }
-export function deleteEmployees(payload) {
-  return {
-    type: "DELETE_EMPLOYEES",
-    payload
-  };
-}
+
 
 export function getAllEmployees() {
   var getAllEmployees = {

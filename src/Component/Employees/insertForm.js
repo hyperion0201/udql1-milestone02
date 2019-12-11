@@ -1,23 +1,13 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
-import {
-  Form,
-  Input,
-  Modal,
-  InputNumber,
-  message,
-  Upload,
-  Button,
-  Icon
-} from "antd";
-import { createProduct, updateProduct } from "../../Store/Action/Product";
+import { Form, Input, Modal, InputNumber, message } from "antd";
+import { createEmployees, updateEmployees } from "../../Store/Action/Employees";
 
 const initialData = [
-  { name: "ID", value: "" },
-  { name: "SKU", value: "" },
+  { name: "EmployeeId", value: "" },
   { name: "Name", value: "" },
-  { name: "Price", value: "" },
-  { name: "Quantity", value: "" }
+  { name: "Phone", value: 0 },
+  { name: "Type", value: "" }
 ];
 const formItemLayout = {
   labelCol: {
@@ -32,7 +22,6 @@ const formItemLayout = {
 
 const InsertForm = props => {
   const [configData, setConfigData] = useState(initialData);
-  const [imgList, setImgList] = useState([]);
   const [disabledSubmit, setDisabledSubmit] = useState(false);
   const { getFieldDecorator } = props.form;
 
@@ -40,36 +29,29 @@ const InsertForm = props => {
     const data = _.get(props, "data", false);
     const temp = data
       ? [
-          { name: "ID", value: data.id },
-          { name: "SKU", value: data.sku },
+          { name: "EmployeeId", value: data.employeeId },
           { name: "Name", value: data.name },
-          { name: "Price", value: data.price },
-          { name: "Quantity", value: data.quantity }
+          { name: "Phone", value: data.phone },
+          { name: "Type", value: data.employeeType }
         ]
       : initialData;
     setConfigData(temp);
   }, []);
   const handleOk = async () => {
     const _id = _.get(props, "data._id");
-    if (!_id && !imgList) {
-      message.info("Please upload your image!");
-      return;
-    }
     setDisabledSubmit(true);
     const data = {
-      id: configData[0].value,
-      sku: configData[1].value,
-      name: configData[2].value,
-      price: configData[3].value,
-      quantity: configData[4].value,
-      image: imgList ? imgList[0] : null
+      employeeId: configData[0].value,
+      name: configData[1].value,
+      phone: configData[2].value,
+      employeeType: configData[3].value
     };
     _id && _.set(data, "_id", _id);
     let res = "";
     if (props.action === "Update") {
-      res = await updateProduct(data);
+      res = await updateEmployees(data);
     } else {
-      res = await createProduct(data);
+      res = await createEmployees(data);
     }
     const status = _.get(res, "status");
     if (status === 200) {
@@ -88,27 +70,6 @@ const InsertForm = props => {
     const index = _.findIndex(array, { name: item.name });
     array[index].value = value;
     setConfigData(array);
-  };
-  const handleUploadChange = info => {
-    let fileList = [...info.fileList];
-    fileList = fileList.slice(-1);
-
-    fileList = fileList.map(file => {
-      if (file.response) {
-        file.url = file.response.url;
-      }
-      return file;
-    });
-    setImgList(fileList);
-  };
-  const uploadProps = {
-    beforeUpload: file => {
-      setImgList(file);
-      return false;
-    },
-    fileList: imgList,
-    listType: "picture-card",
-    onChange: handleUploadChange
   };
   return (
     <Form
@@ -130,27 +91,10 @@ const InsertForm = props => {
               initialValue: item.value,
               rules: [{ required: true, message: "Please input to field!" }]
             })(
-              item.name === "Price" || item.name === "Quantity" ? (
-                <InputNumber
-                  onChange={value => handleChangeData(value, item)}
-                />
-              ) : (
-                <Input onChange={e => handleChangeData(e.target.value, item)} />
-              )
+              <Input onChange={e => handleChangeData(e.target.value, item)} />
             )}
           </Form.Item>
         ))}
-        <Form.Item label="Image">
-          {getFieldDecorator("image", {
-            rules: [{ required: true, message: "Please input to field!" }]
-          })(
-            <Upload {...uploadProps}>
-              <Button>
-                <Icon type="upload" /> Upload Image
-              </Button>
-            </Upload>
-          )}
-        </Form.Item>
       </Modal>
     </Form>
   );
