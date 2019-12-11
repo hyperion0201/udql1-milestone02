@@ -8,7 +8,10 @@ import BgOverlay from "../bgOverlay";
 
 export default function Products() {
   const [data, setData] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState({
+    show: false,
+    action: "Insert",
+  });
   const [curUpdate, setCurUpdate] = useState("");
 
   const getProductData = async () => {
@@ -30,11 +33,12 @@ export default function Products() {
     }
   };
   const showInsertPopup = () => {
-    setShowPopup(true);
+    setCurUpdate("");
+    setShowPopup({show: true, action: "Insert"});
   };
   const handleUpdate = item => {
     setCurUpdate(item);
-    setShowPopup(true);
+    setShowPopup({show: true, action: "Update"});
   };
 
   const columns = [
@@ -103,16 +107,16 @@ export default function Products() {
 
   return (
     <>
-      {showPopup && (
+      {showPopup.show && (
         <>
-          <BgOverlay activeClass={showPopup} />
+          <BgOverlay activeClass={showPopup.show} />
           <InsertForm
             data={curUpdate}
             acceptCancel={(status) => {
-              setShowPopup(false);
+              setShowPopup({show: false});
               status && getProductData();
             }}
-            action={"Update"}
+            action={showPopup.action}
           />
         </>
       )}

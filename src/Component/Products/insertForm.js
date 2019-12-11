@@ -16,8 +16,8 @@ const initialData = [
   { name: "ID", value: "" },
   { name: "SKU", value: "" },
   { name: "Name", value: "" },
-  { name: "Price", value: 0 },
-  { name: "Quantity", value: 0 }
+  { name: "Price", value: "" },
+  { name: "Quantity", value: "" }
 ];
 const formItemLayout = {
   labelCol: {
@@ -38,16 +38,24 @@ const InsertForm = props => {
 
   useEffect(() => {
     const data = _.get(props, "data", false);
-    const temp = data ? [
-      { name: "ID", value: data.id },
-      { name: "SKU", value: data.sku },
-      { name: "Name", value: data.name },
-      { name: "Price", value: data.price },
-      { name: "Quantity", value: data.quantity }
-    ] : initialData;
+    console.log("data: ", data);
+    const temp = data
+      ? [
+          { name: "ID", value: data.id },
+          { name: "SKU", value: data.sku },
+          { name: "Name", value: data.name },
+          { name: "Price", value: data.price },
+          { name: "Quantity", value: data.quantity }
+        ]
+      : initialData;
     setConfigData(temp);
   }, []);
   const handleOk = async () => {
+    const _id = _.get(props, "data._id");
+    if (!_id && !imgList) {
+      message.info("Please upload your image!");
+      return;
+    }
     setDisabledSubmit(true);
     const data = {
       id: configData[0].value,
@@ -55,28 +63,33 @@ const InsertForm = props => {
       name: configData[2].value,
       price: configData[3].value,
       quantity: configData[4].value,
-      _id: props.data._id,
-      image: imgList ? imgList[0] : null,
+      image: imgList ? imgList[0] : null
     };
+    _id && _.set(data, "_id", _id);
+    console.log("data: ", data);
     let res = "";
+    console.log('props.action: ', props.action);
     if (props.action === "Update") {
       res = await updateProduct(data);
     } else {
       res = await createProduct(data);
     }
-    console.log('res: ', res);
+    console.log("res: ", res);
     const status = _.get(res, "status");
     if (status === 200) {
       message.info("Action successed!");
       props.acceptCancel(status);
-    } else message.info("Action fail!");
+    } else {
+      message.info("Action fail!");
+      setDisabledSubmit(false);
+    }
   };
   const handleCancel = () => {
     props.acceptCancel();
   };
   const handleChangeData = (value, item) => {
     let array = configData;
-    const index = _.findIndex(array, {name: item.name});
+    const index = _.findIndex(array, { name: item.name });
     array[index].value = value;
     setConfigData(array);
   };
@@ -113,7 +126,7 @@ const InsertForm = props => {
         visible={true}
         onOk={handleOk}
         onCancel={handleCancel}
-        okButtonProps={{ disabled: disabledSubmit}}
+        okButtonProps={{ disabled: disabledSubmit }}
       >
         {_.map(configData, (item, index) => (
           <Form.Item key={index} label={item.name}>
@@ -122,7 +135,9 @@ const InsertForm = props => {
               rules: [{ required: true, message: "Please input to field!" }]
             })(
               item.name === "Price" || item.name === "Quantity" ? (
-                <InputNumber onChange={value => handleChangeData(value, item)} />
+                <InputNumber
+                  onChange={value => handleChangeData(value, item)}
+                />
               ) : (
                 <Input onChange={e => handleChangeData(e.target.value, item)} />
               )
