@@ -55,7 +55,7 @@ export function createEmployees(info) {
 export function updateEmployees(info) {
   var updateEmployees = {
     method: "PUT",
-    url: baseUrl + `/harvests/${info.id}`,
+    url: baseUrl + `/employees/${info._id}`,
     data: { ...info },
     json: true
   };
@@ -70,7 +70,7 @@ export function updateEmployees(info) {
 export function deleteEmployees(id) {
   var deleteEmployees = {
     method: "DELETE",
-    url: baseUrl + `/harvests/${id}`,
+    url: baseUrl + `/employees/${id}`,
     json: true
   };
   return axios(deleteEmployees)

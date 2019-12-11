@@ -53,7 +53,7 @@ export function setHarvests(payload) {
   export function updateHarvests(info) {
     var updateHarvests = {
       method: "PUT",
-      url: baseUrl + `/harvests/${info.id}`,
+      url: baseUrl + `/harvests/${info._id}`,
       data: {...info},
       json: true
     };

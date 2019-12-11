@@ -58,7 +58,7 @@ export default function Invoice() {
       key: "customerName"
     },
     {
-      title: "Customer PhoneNumber",
+      title: "Customer Phone",
       dataIndex: "customerPhoneNumber",
       key: "customerPhoneNumber"
     },

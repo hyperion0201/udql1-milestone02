@@ -6,7 +6,7 @@ import { createInvoice, updateInvoice } from "../../Store/Action/Invoice";
 const initialData = [
   { name: "ID", value: "" },
   { name: "Customer Name", value: "" },
-  { name: "Customer Phonenumber", value: "" },
+  { name: "Customer Phone", value: "" },
   { name: "Total Price", value: "" },
   { name: "Order Date", value: "" }
 ];
@@ -32,7 +32,7 @@ const InsertForm = props => {
       ? [
           { name: "ID", value: data.invoicesId },
           { name: "Customer Name", value: data.customerName },
-          { name: "Customer Phonenumber", value: data.customerPhoneNumber },
+          { name: "Customer Phone", value: data.customerPhoneNumber },
           { name: "Total Price", value: data.totalPrice },
           { name: "Order Date", value: data.orderDate }
         ]
@@ -95,7 +95,7 @@ const InsertForm = props => {
               rules: [{ required: true, message: "Please input to field!" }]
             })(
               item.name === "Total Price" ||
-                item.name === "Customer Phonenumber" ? (
+                item.name === "Customer Phone" ? (
                 <InputNumber
                   onChange={value => handleChangeData(value, item)}
                 />
