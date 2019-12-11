@@ -1,5 +1,5 @@
 const configs = {
-  baseUrl: "https://web1-milestone01.herokuapp.com"
+  baseUrl: "https://web1-milestone02.herokuapp.com"
 };
 
 window.AppConfigs = configs;

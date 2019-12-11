@@ -53,13 +53,15 @@ export default function Products() {
       title: "Image",
       dataIndex: "sku",
       key: "image",
-      render: item => (
-        <img
-          className="product-img"
-          src={`${baseUrl}/assets/${item.sku}.jpg`}
-          alt={item.name}
-        ></img>
-      )
+      render: item => {
+        return (
+          <img
+            className="product-img"
+            src={`${baseUrl}/assets/${item}.jpg`}
+            alt={item.name}
+          ></img>
+        );
+      }
     },
     {
       title: "Name",

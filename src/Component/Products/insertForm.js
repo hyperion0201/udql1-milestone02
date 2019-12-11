@@ -37,6 +37,7 @@ const InsertForm = props => {
     props.action === "Update" && setConfigData(temp);
   }, [props.data]);
   const handleOk = async (e) => {
+
     let res = "";
     if(props.action === "Update") {
       res = await updateProduct(configData);
@@ -67,7 +68,7 @@ const InsertForm = props => {
       {...formItemLayout}
       action="/products"
       method="post"
-      enctype="multipart/form-data"
+      encType="multipart/form-data"
     >
       <Modal
         title={`${props.action} Product`}
