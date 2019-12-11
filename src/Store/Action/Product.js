@@ -58,9 +58,10 @@ export function createProduct(info) {
     });
 }
 export function updateProduct(info) {
+  console.log('info: ', info);
   var updateCategory = {
     method: "PUT",
-    url: baseUrl + `/products/${info.id}`,
+    url: baseUrl + `/products/${info._id}`,
     data: { ...info },
     json: true
   };

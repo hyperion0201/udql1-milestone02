@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import baseUrl from "../../Configs";
 import { getAllProduct, deleteProduct } from "../../Store/Action/Product";
 import _ from "lodash";
-import { Popconfirm, message, Button, Icon, Table, Divider } from "antd";
+import { Popconfirm, message, Button, Table, Divider } from "antd";
 import InsertForm from "./insertForm";
 import BgOverlay from "../bgOverlay";
 
@@ -58,7 +58,7 @@ export default function Products() {
           <img
             className="product-img"
             src={`${baseUrl}/assets/${item}.jpg`}
-            alt={item.name}
+            alt={item}
           ></img>
         );
       }
@@ -108,7 +108,10 @@ export default function Products() {
           <BgOverlay activeClass={showPopup} />
           <InsertForm
             data={curUpdate}
-            acceptCancel={() => setShowPopup(false)}
+            acceptCancel={(status) => {
+              setShowPopup(false);
+              status && getProductData();
+            }}
             action={"Update"}
           />
         </>
