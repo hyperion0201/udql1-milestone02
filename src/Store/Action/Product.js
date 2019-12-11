@@ -1,5 +1,5 @@
 import axios from "axios";
-import baseUrl from '../../Configs/index';
+import baseUrl from "../../Configs/index";
 
 export function setProduct(payload) {
   return {
@@ -46,7 +46,7 @@ export function createProduct(info) {
   var getCategoryByID = {
     method: "POST",
     url: baseUrl + `/products`,
-    data: {...info},
+    data: { ...info },
     json: true
   };
   return axios(getCategoryByID)
@@ -61,7 +61,7 @@ export function updateProduct(info) {
   var updateCategory = {
     method: "PUT",
     url: baseUrl + `/products/${info.id}`,
-    data: {...info},
+    data: { ...info },
     json: true
   };
   return axios(updateCategory)
@@ -69,7 +69,7 @@ export function updateProduct(info) {
       return response;
     })
     .catch(err => {
-      console.log(err);
+      console.log(err.response.data);
       return err;
     });
 }
